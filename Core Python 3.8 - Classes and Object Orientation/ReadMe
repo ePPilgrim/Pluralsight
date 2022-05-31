@@ -1,0 +1,3 @@
+For polymorphic dispatch invoke static methods through self;
+Constructor of basic class should be invoked explicitly (not implicitly as in other object oriented languages) in derived class constructor;
+Use **kwargs to thread arguments through named constructor class-methods to more specialized subclasses;

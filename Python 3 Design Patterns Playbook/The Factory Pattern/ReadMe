@@ -1,0 +1,8 @@
+To implement Factory pattern introspection is utilized;
+There is difference between introspection and reflection. The last one is about modified object by its metadata;
+Interface classes in python are inhereted from abc.ABC class;
+All methods in interface class must be decorated with  @abc.abstractmethod decorators;
+All packages in python contains optional init file __init__.py;
+Locations used for searching imported modules are listed in configurable variable sys.path;
+However the main purpos of Factory pattern is to make project to comply with Dependency Inversion principle. These two implementations ensure complience with Open/Close principle as well.
+ 
