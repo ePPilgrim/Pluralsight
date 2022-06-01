@@ -1,0 +1,12 @@
+﻿1. RAZOR syntax allows to use C# code along with markup languages to create dynamic web pages;
+2. By default controller classes linked to the razor pages (view) located in predefined path pattern .\Views\"NameOfController"\Index.cshtml;
+3. MVC - View refers (directly or indirectly) to the Model layer; Controller responds to the web request and builds the corresponding web page; 
+4. Bussiness logic is implemented on the Controller level, and results of the calculation are passed to the View layer;
+5. To make a snapshot of razor code reusable, .\Views\Shared\ directory is created to contain shared layouts of razor pages or components.
+6. View Component, as well as TagHelper, is utilized to reach reusability in the ASP.NET framework;
+7. Binding - The order controller is an excellent example of binding between View and Model layers (POST request is used);
+8. Entity Framework (EF) - a framework for ORM between Domain data (in this case, it is SQL DB) and the Model layer;
+9. Entity Framework is a valuable framework for migration - In Package Manage Console two commands are used: add-migration and update-database;
+10. It is convenient to publish the ASP project to the Azure cloud from Visual Studio. This Azure App service could be created from VS and not only from Cloud itself.
+11. For the DB part, Azur SQL was created, and its connection string was set up in the Azure App Service configuration. You could not manually change the connection string when switching from Azure to the local environment because the App Service environment replaces the same env variable from the appsetting.json configuration file.
+12. For migration to Azure SQL, the same utilities as for local DB are used: add-migration + update-database;
