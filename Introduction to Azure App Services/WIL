@@ -1,0 +1,9 @@
+1. Azure App Services - belong to IaaS category;
+2. Azure App Service consists of WebApps, API Apps, Logic Apps, Mobile Apps, Function Apps;
+3. All Azure App Services are working on the top of Azure Service Fabric that provide them with all needed resources;
+4. To make my ASP.NET application (BethanyPieShop) be accessed globaly, following simple steps should be done:
+i) Cread DB storage on the Azure Cloud - Azure SQL data base + Azure SQL server;
+ii) From VS migrate DB to the Cloud DB: use utitlity of entity framework add-migration + update-databse. But in this scenario only tables and initial records are being migreted to new Azure SQL DB.
+For migration from local DB to Azure DB other mechanisms are suggested to be applied.
+iii) Publish ASP.NET web application to the Azure App Service.
+5. Care should be taken to the App Service Plan such as it determines resources consumed by pulished web application as well as price for this service.

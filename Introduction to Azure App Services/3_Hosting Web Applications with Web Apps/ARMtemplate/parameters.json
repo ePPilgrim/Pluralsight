@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apis_bethanypieshop_path": {
+            "value": null
+        },
+        "vulnerabilityAssessments_Default_storageContainerPath": {
+            "value": null
+        },
+        "sites_BethanyPieShop_name": {
+            "value": null
+        },
+        "servers_plddsqldbserver_name": {
+            "value": null
+        },
+        "service_BethanyPieShop_apim_name": {
+            "value": null
+        },
+        "serverfarms_BethanysPieShop20220531212720Plan_name": {
+            "value": null
+        },
+        "smartdetectoralertrules_failure_anomalies___bethanypieshop_name": {
+            "value": null
+        },
+        "components_bethanypieshop_externalid": {
+            "value": null
+        },
+        "actiongroups_application_insights_smart_detection_externalid": {
+            "value": null
+        }
+    }
+}

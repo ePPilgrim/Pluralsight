@@ -1,0 +1,1398 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apis_bethanypieshop_path": {
+            "type": "SecureString"
+        },
+        "vulnerabilityAssessments_Default_storageContainerPath": {
+            "type": "SecureString"
+        },
+        "sites_BethanyPieShop_name": {
+            "defaultValue": "BethanyPieShop",
+            "type": "String"
+        },
+        "servers_plddsqldbserver_name": {
+            "defaultValue": "plddsqldbserver",
+            "type": "String"
+        },
+        "service_BethanyPieShop_apim_name": {
+            "defaultValue": "BethanyPieShop-apim",
+            "type": "String"
+        },
+        "serverfarms_BethanysPieShop20220531212720Plan_name": {
+            "defaultValue": "BethanysPieShop20220531212720Plan",
+            "type": "String"
+        },
+        "smartdetectoralertrules_failure_anomalies___bethanypieshop_name": {
+            "defaultValue": "failure anomalies - bethanypieshop",
+            "type": "String"
+        },
+        "components_bethanypieshop_externalid": {
+            "defaultValue": "/subscriptions/a28af5a0-02eb-4fca-90ea-c690284805fa/resourceGroups/pldd/providers/microsoft.insights/components/bethanypieshop",
+            "type": "String"
+        },
+        "actiongroups_application_insights_smart_detection_externalid": {
+            "defaultValue": "/subscriptions/a28af5a0-02eb-4fca-90ea-c690284805fa/resourceGroups/mo-p_telemetry_resource_group/providers/microsoft.insights/actiongroups/application insights smart detection",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+            "apiVersion": "2021-04-01",
+            "name": "[parameters('smartdetectoralertrules_failure_anomalies___bethanypieshop_name')]",
+            "location": "global",
+            "tags": {
+                "cost-center": "CC1186 - PD Administration",
+                "legal-unit": "1000 SimCorp A/S"
+            },
+            "properties": {
+                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+                "state": "Enabled",
+                "severity": "Sev3",
+                "frequency": "PT1M",
+                "detector": {
+                    "id": "FailureAnomaliesDetector"
+                },
+                "scope": [
+                    "[parameters('components_bethanypieshop_externalid')]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[parameters('actiongroups_application_insights_smart_detection_externalid')]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[parameters('service_BethanyPieShop_apim_name')]",
+            "location": "Central US",
+            "tags": {
+                "cost-center": "CC1186 - PD Administration",
+                "legal-unit": "1000 SimCorp A/S"
+            },
+            "sku": {
+                "name": "Consumption",
+                "capacity": 0
+            },
+            "properties": {
+                "publisherEmail": "demydiuk@gmail.com",
+                "publisherName": "pluralsight",
+                "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
+                "hostnameConfigurations": [
+                    {
+                        "type": "Proxy",
+                        "hostName": "bethanypieshop-apim.azure-api.net",
+                        "negotiateClientCertificate": false,
+                        "defaultSslBinding": true,
+                        "certificateSource": "BuiltIn"
+                    }
+                ],
+                "customProperties": {
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "false"
+                },
+                "virtualNetworkType": "None",
+                "disableGateway": false,
+                "apiVersionConstraint": {},
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[parameters('servers_plddsqldbserver_name')]",
+            "location": "westeurope",
+            "tags": {
+                "cost-center": "CC1186 - PD Administration",
+                "customer-data": "",
+                "legal-unit": "1000 SimCorp A/S",
+                "personal-data": ""
+            },
+            "kind": "v12.0",
+            "properties": {
+                "administratorLogin": "plddlogin",
+                "version": "12.0",
+                "minimalTlsVersion": "1.2",
+                "publicNetworkAccess": "Enabled",
+                "restrictOutboundNetworkAccess": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2021-03-01",
+            "name": "[parameters('serverfarms_BethanysPieShop20220531212720Plan_name')]",
+            "location": "Central US",
+            "tags": {
+                "cost-center": "CC1186 - PD Administration",
+                "legal-unit": "1000 SimCorp A/S"
+            },
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            },
+            "kind": "app",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[concat(parameters('service_BethanyPieShop_apim_name'), '/bethanypieshop')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "BethanyPieShop",
+                "apiRevision": "1",
+                "subscriptionRequired": false,
+                "protocols": [
+                    "https"
+                ],
+                "isCurrent": true,
+                "path": "[parameters('apis_bethanypieshop_path')]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/backends",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[concat(parameters('service_BethanyPieShop_apim_name'), '/WebApp_bethanypieshop')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name'))]"
+            ],
+            "properties": {
+                "description": "BethanyPieShop",
+                "url": "https://bethanypieshop.azurewebsites.net",
+                "protocol": "http",
+                "resourceId": "https://management.azure.com/subscriptions/a28af5a0-02eb-4fca-90ea-c690284805fa/resourceGroups/pldd/providers/Microsoft.Web/sites/BethanyPieShop"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/policies",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[concat(parameters('service_BethanyPieShop_apim_name'), '/policy')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name'))]"
+            ],
+            "properties": {
+                "value": "<!--\r\n    IMPORTANT:\r\n    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n    - Only the <forward-request> policy element can appear within the <backend> section element.\r\n    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n    - To add a policy position the cursor at the desired insertion point and click on the round button associated with the policy.\r\n    - To remove a policy, delete the corresponding policy statement from the policy document.\r\n    - Policies are applied in the order of their appearance, from the top down.\r\n-->\r\n<policies>\r\n  <inbound></inbound>\r\n  <backend>\r\n    <forward-request />\r\n  </backend>\r\n  <outbound></outbound>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[concat(parameters('service_BethanyPieShop_apim_name'), '/myfirstproduct')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "MyFirstProduct",
+                "description": "Dome Product",
+                "subscriptionRequired": false,
+                "state": "published"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[concat(parameters('service_BethanyPieShop_apim_name'), '/master')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name'))]"
+            ],
+            "properties": {
+                "scope": "[concat(resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name')), '/')]",
+                "displayName": "Built-in all-access subscription",
+                "state": "active",
+                "allowTracing": true
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advancedThreatProtectionSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/CreateIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/DbParameterization')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/DefragmentIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/DropIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/ForceLastGoodPlan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/auditingSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/connectionPolicies",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/default')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "connectionType": "Default"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "tags": {
+                "cost-center": "CC1186 - PD Administration",
+                "legal-unit": "1000 SimCorp A/S"
+            },
+            "sku": {
+                "name": "Basic",
+                "tier": "Basic",
+                "capacity": 5
+            },
+            "kind": "v12.0,user",
+            "properties": {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": 1073741824,
+                "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+                "zoneRedundant": false,
+                "readScale": "Disabled",
+                "requestedBackupStorageRedundancy": "Local",
+                "maintenanceConfigurationId": "/subscriptions/a28af5a0-02eb-4fca-90ea-c690284805fa/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default",
+                "isLedgerOn": false
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/master/Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/master/Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/ledgerDigestUploads",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/master/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/master/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/devOpsAuditingSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/encryptionProtector",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "kind": "servicemanaged",
+            "properties": {
+                "serverKeyName": "ServiceManaged",
+                "serverKeyType": "ServiceManaged",
+                "autoRotationEnabled": false
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/extendedAuditingSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/AllowAllWindowsAzureIps')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/ClientIp-2022-5-31_11-58-43')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/keys",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/ServiceManaged')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "kind": "servicemanaged",
+            "properties": {
+                "serverKeyType": "ServiceManaged"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/securityAlertPolicies",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                },
+                "storageContainerPath": "[parameters('vulnerabilityAssessments_Default_storageContainerPath')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2021-03-01",
+            "name": "[parameters('sites_BethanyPieShop_name')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_BethanysPieShop20220531212720Plan_name'))]"
+            ],
+            "tags": {
+                "hidden-related:/subscriptions/a28af5a0-02eb-4fca-90ea-c690284805fa/resourceGroups/pldd/providers/Microsoft.Web/serverFarms/BethanysPieShop20220531212720Plan": "empty",
+                "cost-center": "CC1186 - PD Administration",
+                "legal-unit": "1000 SimCorp A/S"
+            },
+            "kind": "app",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "bethanypieshop.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "bethanypieshop.scm.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_BethanysPieShop20220531212720Plan_name'))]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "F736E6AEFB45373FFBA9E894AA3B8BB928197510C068E783591B9BF16078A846",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2021-03-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/ftp')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ],
+            "tags": {
+                "hidden-related:/subscriptions/a28af5a0-02eb-4fca-90ea-c690284805fa/resourceGroups/pldd/providers/Microsoft.Web/serverFarms/BethanysPieShop20220531212720Plan": "empty",
+                "cost-center": "CC1186 - PD Administration",
+                "legal-unit": "1000 SimCorp A/S"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2021-03-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/scm')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ],
+            "tags": {
+                "hidden-related:/subscriptions/a28af5a0-02eb-4fca-90ea-c690284805fa/resourceGroups/pldd/providers/Microsoft.Web/serverFarms/BethanysPieShop20220531212720Plan": "empty",
+                "cost-center": "CC1186 - PD Administration",
+                "legal-unit": "1000 SimCorp A/S"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2021-03-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/', parameters('sites_BethanyPieShop_name'), '.azurewebsites.net')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ],
+            "properties": {
+                "siteName": "BethanyPieShop",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/siteextensions",
+            "apiVersion": "2021-03-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/Microsoft.AspNetCore.AzureAppServices.SiteExtension')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-05-31T19_57_45_9751825')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-05-31T20_57_46_0143362')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-05-31T21_57_46_0120545')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-05-31T22_57_46_1198870')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-05-31T23_57_46_0676229')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T00_57_46_1385008')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T01_57_46_1051558')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T02_57_46_1499817')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T03_57_46_1822646')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T04_57_46_1919574')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T05_57_46_2070436')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T06_57_46_1927659')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T07_57_46_2288264')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T08_57_46_3993805')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T09_57_46_2475277')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T10_57_46_2842779')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T11_57_46_3010973')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T12_57_46_3909426')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T13_57_46_3686320')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T14_57_46_4802210')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T15_57_46_3728842')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T16_57_46_4126189')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T17_57_46_4170561')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T18_57_46_4646557')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T19_57_46_4626721')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T20_57_46_4945812')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T21_57_46_5130676')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T22_57_46_5492132')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-01T23_57_46_6087624')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T00_57_46_6006400')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T01_57_46_5997192')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T02_57_46_6218832')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T03_57_46_6334317')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T04_57_46_7023361')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T05_57_46_6929314')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T06_57_46_7117596')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T07_57_46_7354231')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T08_57_46_7402144')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T09_57_46_8175998')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T10_57_46_8009967')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/2022-06-02T11_57_46_8059489')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[concat(parameters('service_BethanyPieShop_apim_name'), '/bethanypieshop/629672484fb2d9a109994d95')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_BethanyPieShop_apim_name'), 'bethanypieshop')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "GetAllPies",
+                "method": "GET",
+                "urlTemplate": "/Pie/List",
+                "templateParameters": [],
+                "description": "Show all pies available in Bethany PieShop",
+                "responses": []
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[concat(parameters('service_BethanyPieShop_apim_name'), '/bethanypieshop/getcheesecakes')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_BethanyPieShop_apim_name'), 'bethanypieshop')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "GetCheeseCakes",
+                "method": "GET",
+                "urlTemplate": "/Pie/List?category=Cheese%20cakes",
+                "templateParameters": [],
+                "description": "Show all available cheese cakes",
+                "responses": []
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[concat(parameters('service_BethanyPieShop_apim_name'), '/bethanypieshop/home')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_BethanyPieShop_apim_name'), 'bethanypieshop')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "Home",
+                "method": "GET",
+                "urlTemplate": "/*",
+                "templateParameters": [],
+                "responses": []
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/policies",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[concat(parameters('service_BethanyPieShop_apim_name'), '/bethanypieshop/policy')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_BethanyPieShop_apim_name'), 'bethanypieshop')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_BethanyPieShop_apim_name'))]"
+            ],
+            "properties": {
+                "value": "<policies>\r\n  <inbound>\r\n    <base />\r\n    <set-backend-service id=\"apim-generated-policy\" backend-id=\"WebApp_bethanypieshop\" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/CreateIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/DbParameterization')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/DefragmentIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/DropIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/ForceLastGoodPlan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "weeklyRetention": "PT0S",
+                "monthlyRetention": "PT0S",
+                "yearlyRetention": "PT0S",
+                "weekOfYear": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 7,
+                "diffBackupIntervalInHours": 24
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/Default')]",
+            "location": "West Europe",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/ledgerDigestUploads",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[concat(parameters('servers_plddsqldbserver_name'), '/plddsqldb/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_plddsqldbserver_name'), 'plddsqldb')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_plddsqldbserver_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2021-03-01",
+            "name": "[concat(parameters('sites_BethanyPieShop_name'), '/web')]",
+            "location": "Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_BethanyPieShop_name'))]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_BethanyPieShop_apim_name'), 'bethanypieshop')]"
+            ],
+            "tags": {
+                "hidden-related:/subscriptions/a28af5a0-02eb-4fca-90ea-c690284805fa/resourceGroups/pldd/providers/Microsoft.Web/serverFarms/BethanysPieShop20220531212720Plan": "empty",
+                "cost-center": "CC1186 - PD Administration",
+                "legal-unit": "1000 SimCorp A/S"
+            },
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "phpVersion": "5.6",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$BethanyPieShop",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "apiManagementConfig": {
+                    "id": "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_BethanyPieShop_apim_name'), 'bethanypieshop')]"
+                },
+                "localMySqlEnabled": false,
+                "managedServiceIdentityId": 5115,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "AllAllowed",
+                "preWarmedInstanceCount": 0,
+                "functionAppScaleLimit": 0,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        }
+    ]
+}
