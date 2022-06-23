@@ -1,3 +1,10 @@
-For polymorphic dispatch invoke static methods through self;
-Constructor of basic class should be invoked explicitly (not implicitly as in other object oriented languages) in derived class constructor;
-Use **kwargs to thread arguments through named constructor class-methods to more specialized subclasses;
+1. For polymorphic dispatch invoke static methods through self;
+2. Constructor of basic class should be invoked explicitly (not implicitly as in other object oriented languages) in derived class constructor;
+3. Use **kwargs to thread arguments through named constructor class-methods to more specialized subclasses;
+4. cls.__mro__ - contains method resolution order detailes in multiply inherited class;
+5. isinstance(...), issubclass(...) - used for introspection;
+6. IMPORTANT: super(class type, instance) - it doesn't matter in what class the super() method is called, it use __mro__ of instance object (not __mro__ of containing class);
+7. list.py and super.py - multiple inheritance and method resolution order;
+8. shipping.py - static and class methods (@staticmethod and @classmethod);
+9. class decorator function take metaclass object (cls) as its argument do some intospecting operation (introspection) and return metaclass (cls) object again.
+
