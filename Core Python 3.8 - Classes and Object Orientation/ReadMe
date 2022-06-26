@@ -6,5 +6,11 @@
 6. IMPORTANT: super(class type, instance) - it doesn't matter in what class the super() method is called, it use __mro__ of instance object (not __mro__ of containing class);
 7. list.py and super.py - multiple inheritance and method resolution order;
 8. shipping.py - static and class methods (@staticmethod and @classmethod);
-9. class decorator function take metaclass object (cls) as its argument do some intospecting operation (introspection) and return metaclass (cls) object again.
+9. class decorator function takes class object (not instance object) (cls) as its argument to do some introspecting operation (introspection) and return class object (cls) again;
+10. vars(cls) - usefull tool for introspection;
+11. inspect - standard library module that contains tools for introspection;
+12. module in memory is singeltone so that decorator function is applied only once when the class firstly defined or loaded;
+13.Class decorator and Class decorator factory used to expand function of the class with decorators (metaprogramming);
+14. @dataclass could be used as decorator or as decorator factory;
+
 
