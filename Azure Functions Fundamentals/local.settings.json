@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "EmailSender": "p.demydiuk@gmail.com",
+    "SendGridApiKey": "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"
+  }
+}
