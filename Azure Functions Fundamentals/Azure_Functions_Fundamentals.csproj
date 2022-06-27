@@ -4,6 +4,11 @@
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="azure-functions-fundamentals\**" />
+    <EmbeddedResource Remove="azure-functions-fundamentals\**" />
+    <None Remove="azure-functions-fundamentals\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.SendGrid" Version="3.0.2" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Tables" Version="1.0.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
